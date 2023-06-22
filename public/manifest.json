@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "ACGME Anesthesia Case Log Helper",
+  "description": "Simplify your anesthesia case logging process!",
+  "version": "0.2",
+  "action": {
+    "default_popup": "index.html",
+    "default_icon": "hello_extensions.png"
+  },
+  "icons": {
+    "48": "icon48.png",
+    "128": "icon128.png"
+  },
+  "permissions": ["activeTab"],
+
+  "content_scripts": [
+    {
+      "matches": ["https://apps.acgme.org/*"],
+      "js": ["static/content.js"]
+    }
+  ]
+
+}

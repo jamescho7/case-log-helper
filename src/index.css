@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  min-width: 505px;
+  color: white;
+  font-family: "Poppins", sans-serif;
+  background-color: #1e293b
+}
+
+select {
+  background-color: transparent;
+  overflow: auto;
+}
+
+
+select option:checked {
+  background-color: #3737a4; 
+  color: white;
+}
+
+input {
+  color-scheme: dark;
+}
