@@ -1,7 +1,9 @@
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-  console.log("hello")
-  document.getElementById("5a53744db82c4cf985fe99dbc3a9ee234ef62f15aa8696474498ceba43fd3ba7").value = request.date;
-  document.getElementById("PatientTypes").value = [
+  const dateInput = document.querySelector('.input-group.date.ProcedureDate input[type="text"]');
+  if (dateInput) {
+      dateInput.value = request.date;
+  }
+ document.getElementById("PatientTypes").value = [
     "30",
     "31",
     "32",

@@ -71,6 +71,7 @@ function App() {
     setAgeCategory("12 to 64 years");
     setAsaClass("3");
     setIsEmergency("No");
+    setIsDifficultAirway("No")
     setAnesType("GA");
     setAirway("Direct Oral");
     setMasked(true);
