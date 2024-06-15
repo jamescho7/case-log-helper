@@ -34,6 +34,8 @@ function App() {
   );
   const [asaClass, setAsaClass] = useStickyState("3", "asaClass");
   const [isEmergency, setIsEmergency] = useStickyState("No", "isEmergency");
+  const [isDifficultAirway, setIsDifficultAirway] = useStickyState("No", "isDifficultAirway");
+
   const [anesType, setAnesType] = useStickyState("GA", "anesType");
   const [airway, setAirway] = useStickyState("Direct Oral", "airway");
   const [masked, setMasked] = useStickyState("Yes", "masked");
@@ -84,7 +86,7 @@ function App() {
   };
 
   useEffect(() => {
-    if (asaClass == "6" && isEmergency == "Yes") {
+    if (asaClass == "6") {
       setIsEmergency("No");
     }
   }, []);
@@ -154,6 +156,7 @@ function App() {
         ].indexOf(ageCategory),
         asaClass,
         isEmergency,
+        isDifficultAirway,
         anesType,
         airway,
         masked: masked == "Yes",
@@ -179,6 +182,7 @@ function App() {
         &#128137;ACGME Anesthesia Case Log Helper
       </h1>
       <h2 className="text-white italic text-xs">Created by jamescho7</h2>
+      <h2 className="text-white italic text-xs">Updated 6/15/24</h2>
 
       {active && (
         <>
@@ -222,7 +226,7 @@ function App() {
                     ? ["1", "2", "3", "4", "5", "6"]
                     : ["1", "2", "3", "4", "5"]
                 }
-                suffix={isEmergency == "Yes" ? "E" : ""}
+                suffix={isEmergency != "No" ? "E" : ""}
                 value={asaClass}
                 setValue={setAsaClass}
               />
@@ -231,27 +235,41 @@ function App() {
               {asaClass != "6" && (
                 <SimpleDropdown
                   label="Emergency?"
-                  options={["Yes", "No"]}
+                  options={["No", "Trauma", "Non-Trauma"]}
                   value={isEmergency}
                   setValue={setIsEmergency}
                 />
               )}
             </div>
-            <div className="flex flex-col">
-              <SimpleDropdown
-                label="Primary Anesthesia"
-                options={[
-                  "GA",
-                  "MAC",
-                  "Spinal",
-                  "Epidural",
-                  "CSE",
-                  "GA + Epidural",
-                ]}
-                value={anesType}
-                setValue={setAnesType}
-              />
+            <div className="flex flex-col pr-2">
+              {asaClass != "6" && (
+                <SimpleDropdown
+                  label="Difficult Airway?"
+                  options={["No", "Anticipated", "Unanticipated"]}
+                  value={isDifficultAirway}
+                  setValue={setIsDifficultAirway}
+                />
+              )}
             </div>
+
+          </div>
+
+          <div className="flex">
+            <div className="flex flex-col">
+                <SimpleDropdown
+                  label="Primary Anesthesia"
+                  options={[
+                    "GA",
+                    "MAC",
+                    "Spinal",
+                    "Epidural",
+                    "CSE",
+                    "GA + Epidural",
+                  ]}
+                  value={anesType}
+                  setValue={setAnesType}
+                />
+              </div>
           </div>
 
           <div className="flex">

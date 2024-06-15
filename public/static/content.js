@@ -1,6 +1,6 @@
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-  document.getElementById("ProcedureDate").value = request.date;
-  console.log(request.date);
+  console.log("hello")
+  document.getElementById("5a53744db82c4cf985fe99dbc3a9ee234ef62f15aa8696474498ceba43fd3ba7").value = request.date;
   document.getElementById("PatientTypes").value = [
     "30",
     "31",
@@ -34,26 +34,31 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   asa5e.checked = false;
 
   if (request.asaClass == "1") {
-    asa1e.checked = request.isEmergency == "Yes";
+    asa1e.checked = request.isEmergency != "No";
     asa1.checked = !asa1e.checked;
   } else if (request.asaClass == "2") {
-    asa2e.checked = request.isEmergency == "Yes";
+    asa2e.checked = request.isEmergency != "No";
     asa2.checked = !asa2e.checked;
   } else if (request.asaClass == "3") {
-    asa3e.checked = request.isEmergency == "Yes";
+    asa3e.checked = request.isEmergency != "No";
     asa3.checked = !asa3e.checked;
   } else if (request.asaClass == "4") {
-    asa4e.checked = request.isEmergency == "Yes";
+    asa4e.checked = request.isEmergency != "No";
     asa4.checked = !asa4e.checked;
   } else if (request.asaClass == "5") {
-    asa5e.checked = request.isEmergency == "Yes";
+    asa5e.checked = request.isEmergency != "No";
     asa5.checked = !asa5e.checked;
   } else if (request.asaClass == "6") {
     asa6.checked = true;
   }
 
   document.getElementById("CaseTypes_46").checked =
-    request.isEmergency == "Yes";
+    request.isEmergency == "Non-Trauma";
+
+  document.getElementById("CaseTypes_134").checked = request.isEmergency == "Trauma"
+
+  document.getElementById("CaseTypes_148").checked = request.isDifficultAirway == "Anticipated" 
+  document.getElementById("CaseTypes_149").checked = request.isDifficultAirway == "Unanticipated" 
 
   var cse = document.getElementById("156646");
   var epi = document.getElementById("1256332");
