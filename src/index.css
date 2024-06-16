@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-  min-width: 525px;
+  min-width: 555px;
   color: white;
   font-family: "Poppins", sans-serif;
   background-color: #1e293b
