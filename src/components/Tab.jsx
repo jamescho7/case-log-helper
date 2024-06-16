@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
 
-const Tab = ({ tabs }) => {
-  const [activeTab, setActiveTab] = useState(tabs[0].label);
+
+const Tab = ({ tabs, activeTab, setActiveTab }) => {
 
   return (
     <div className="w-full py-4">

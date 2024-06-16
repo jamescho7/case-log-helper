@@ -53,7 +53,10 @@ function App() {
 
   const [currentUrl, setCurrentUrl] = useState("");
 
-    const [adductorCanal, setAdductorCanal] = useStickyState(false, 'adductorCanal');
+  const [continuous, setContinuous] = useStickyState(false, 'continuous');
+  const [single, setSingle] = useStickyState(false, 'single');
+
+  const [adductorCanal, setAdductorCanal] = useStickyState(false, 'adductorCanal');
   const [ankle, setAnkle] = useStickyState(false, 'ankle');
   const [axillary, setAxillary] = useStickyState(false, 'axillary');
   const [erectorSpinaePlane, setErectorSpinaePlane] = useStickyState(false, 'erectorSpinaePlane');
@@ -69,7 +72,9 @@ function App() {
   const [saphenous, setSaphenous] = useStickyState(false, 'saphenous');
   const [sciatic, setSciatic] = useStickyState(false, 'sciatic');
   const [supraclavicular, setSupraclavicular] = useStickyState(false, 'supraclavicular');
-  const [transversusAbdominalPlane, setTransverseAbdominalPlane] = useStickyState(false, 'transversusAbdominalPlane');
+  const [transversusAbdominalPlane, setTransversusAbdominalPlane] = useStickyState(false, 'transversusAbdominalPlane');
+
+
 
   chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
     if (tabs[0].url) {
@@ -85,23 +90,46 @@ function App() {
   });
 
   const reset = () => {
-    setDate(new Date().toDateInputValue());
-    setAgeCategory("12 to 64 years");
-    setAsaClass("3");
-    setIsEmergency("No");
-    setIsDifficultAirway("No")
-    setAnesType("GA");
-    setAirway("Direct Oral");
-    setMasked(true);
-    setCategory("Default");
-    setSubcategory("None");
-    setUltrasound(false);
-    setAline(false);
-    setCline(false);
-    setPacath(false);
-    setCsf(false);
-    setEpm(false);
-    setTee(false);
+
+    if (activeTab == "Anesthesia") {
+      setDate(new Date().toDateInputValue());
+      setAgeCategory("12 to 64 years");
+      setAsaClass("3");
+      setIsEmergency("No");
+      setIsDifficultAirway("No")
+      setAnesType("GA");
+      setAirway("Direct Oral");
+      setMasked(true);
+      setCategory("Default");
+      setSubcategory("None");
+      setUltrasound(false);
+      setAline(false);
+      setCline(false);
+      setPacath(false);
+      setCsf(false);
+      setEpm(false);
+      setTee(false);
+    } else if (activeTab == "Nerve Blocks") {
+      setContinuous(false);
+      setSingle(false);
+      setAdductorCanal(false);
+      setAnkle(false);
+      setAxillary(false);
+      setErectorSpinaePlane(false);
+      setFemoral(false);
+      setInfraclavicular(false);
+      setInterscalene(false);
+      setLumbarPlexus(false);
+      setParavertebral(false);
+      setOther(false);
+      setPopliteal(false);
+      setQuadratusLumborum(false);
+      setRetrobulbar(false);
+      setSaphenous(false);
+      setSciatic(false);
+      setSupraclavicular(false);
+      setTransversusAbdominalPlane(false);
+    }
   };
 
   useEffect(() => {
@@ -162,541 +190,610 @@ function App() {
 
   const sendMessage = (doSubmit) => {
     chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
-      var activeTab = tabs[0];
+      var currentTab = tabs[0];
 
-      chrome.tabs.sendMessage(activeTab.id, {
-        date: date.toString("MM/dd/yyyy"),
-        ageCategory: [
-          "<3 mos.",
-          "3 mos to 2 years",
-          "3 to 11 years",
-          "12 to 64 years",
-          "65+",
-        ].indexOf(ageCategory),
-        asaClass,
-        isEmergency,
-        isDifficultAirway,
-        anesType,
-        airway,
-        masked: masked == "Yes",
-        category,
-        subcategory,
-        ultrasound,
-        aline,
-        cline,
-        pacath,
-        csf,
-        epm,
-        tee,
-        submit: doSubmit,
-      });
+      if (activeTab == "Anesthesia") {
+
+        chrome.tabs.sendMessage(currentTab.id, {
+          type: "anesthesia",
+          date: date.toString("MM/dd/yyyy"),
+          ageCategory: [
+            "<3 mos.",
+            "3 mos to 2 years",
+            "3 to 11 years",
+            "12 to 64 years",
+            "65+",
+          ].indexOf(ageCategory),
+          asaClass,
+          isEmergency,
+          isDifficultAirway,
+          anesType,
+          airway,
+          masked: masked == "Yes",
+          category,
+          subcategory,
+          ultrasound,
+          aline,
+          cline,
+          pacath,
+          csf,
+          epm,
+          tee,
+          submit: doSubmit,
+        });
+      } else if (activeTab == "Nerve Blocks") {
+
+        chrome.tabs.sendMessage(currentTab.id, {
+          type: "block",
+          date: date.toString("MM/dd/yyyy"),
+          ageCategory: [
+            "<3 mos.",
+            "3 mos to 2 years",
+            "3 to 11 years",
+            "12 to 64 years",
+            "65+",
+          ].indexOf(ageCategory),
+          continuous,
+          single,
+          adductorCanal,
+          ankle,
+          axillary,
+          erectorSpinaePlane,
+          femoral,
+          infraclavicular,
+          interscalene,
+          lumbarPlexus,
+          paravertebral,
+          other,
+          popliteal,
+          quadratusLumborum,
+          retrobulbar,
+          saphenous,
+          sciatic,
+          supraclavicular,
+          transversusAbdominalPlane,
+          submit: doSubmit,
+        });
+      }
+
     });
   };
 
   const active = currentUrl.includes("apps.acgme.org/");
 
-  const anesTab = <>
-  <div className="flex">
-            <div className="flex flex-col pr-2">
-              <SimpleDropdown
-                label="ASA Class"
-                options={
-                  isEmergency == "No"
-                    ? ["1", "2", "3", "4", "5", "6"]
-                    : ["1", "2", "3", "4", "5"]
-                }
-                suffix={isEmergency != "No" ? "E" : ""}
-                value={asaClass}
-                setValue={setAsaClass}
-              />
-            </div>
-            <div className="flex flex-col pr-2">
-              {asaClass != "6" && (
-                <SimpleDropdown
-                  label="Emergency?"
-                  options={["No", "Trauma", "Non-Trauma"]}
-                  value={isEmergency}
-                  setValue={setIsEmergency}
-                />
-              )}
-            </div>
-            <div className="flex flex-col pr-2">
-              {asaClass != "6" && (
-                <SimpleDropdown
-                  label="Difficult Airway?"
-                  options={["No", "Anticipated", "Unanticipated"]}
-                  value={isDifficultAirway}
-                  setValue={setIsDifficultAirway}
-                />
-              )}
-            </div>
-
-          </div>
-
-          <div className="flex">
-            <div className="flex flex-col">
-                <SimpleDropdown
-                  label="Primary Anesthesia"
-                  options={[
-                    "GA",
-                    "MAC",
-                    "Spinal",
-                    "Epidural",
-                    "CSE",
-                    "GA + Epidural",
-                  ]}
-                  value={anesType}
-                  setValue={setAnesType}
-                />
-              </div>
-          </div>
-
-          <div className="flex">
-            <div className="flex flex-col items-start pr-2">
-              <SimpleDropdown
-                label="Masked?"
-                options={["Yes", "No"]}
-                value={masked}
-                setValue={setMasked}
-              />
-            </div>
-            <div className="flex flex-col">
-              <SimpleDropdown
-                label="Airway"
-                options={
-                  anesType == "MAC"
-                    ? ["Natural"]
-                    : [
-                        "Natural",
-                        "Direct Oral",
-                        "Indirect Oral",
-                        "LMA",
-                        "Direct Nasal",
-                        "Indirect Nasal",
-                      ]
-                }
-                value={airway}
-                setValue={setAirway}
-              />
-            </div>
-          </div>
-
+  
+  const anesTab = (
+    <>
+      <div className="flex">
+        <div className="flex flex-col pr-2">
           <SimpleDropdown
-            label="Procedure Category"
-            options={[
-              "Default",
-              "Cardiac",
-              "Intrathoracic",
-              "Major Vascular",
-              "Intracerebral",
-              "Delivery",
-            ]}
-            value={category}
-            setValue={setCategory}
+            label="ASA Class"
+            options={
+              isEmergency === "No"
+                ? ["1", "2", "3", "4", "5", "6"]
+                : ["1", "2", "3", "4", "5"]
+            }
+            suffix={isEmergency !== "No" ? "E" : ""}
+            value={asaClass}
+            setValue={setAsaClass}
           />
-
-          <Subcategory category={category} />
-
-          <div className="flex mt-1.5">
-            <div>
-              <label className="text-xs text-blue-500" htmlFor="access">
-                Access
-              </label>
-
-              <div id="access">
-                <input
-                  type="checkbox"
-                  id="ultrasound"
-                  className={checkboxstyle}
-                  checked={ultrasound}
-                  onChange={() => {
-                    setUltrasound((ultrasound) => !ultrasound);
-                  }}
-                />
-                <label className={checkboxlabelstyle} htmlFor="ultrasound">
-                  Ultrasound-guided access
-                </label>
-                <br />
-
-                <input
-                  type="checkbox"
-                  id="aline"
-                  className={checkboxstyle}
-                  checked={aline}
-                  onChange={() => {
-                    setAline((aline) => !aline);
-                  }}
-                />
-                <label className={checkboxlabelstyle} htmlFor="aline">
-                  Arterial line
-                </label>
-                <br />
-
-                <input
-                  type="checkbox"
-                  id="cline"
-                  className={checkboxstyle}
-                  checked={cline}
-                  onChange={() => {
-                    setCline((cline) => !cline);
-                  }}
-                />
-                <label className={checkboxlabelstyle} htmlFor="cline">
-                  Central line
-                </label>
-                <br />
-
-                <input
-                  type="checkbox"
-                  id="pacath"
-                  className={checkboxstyle}
-                  checked={pacath}
-                  onChange={() => {
-                    setPacath((pacath) => !pacath);
-                  }}
-                />
-                <label className={checkboxlabelstyle} htmlFor="pacath">
-                  Pulmonary artery catheter
-                </label>
-                <br />
-              </div>
-            </div>
-
-            <div className="pl-5">
-              <label
-                className="text-xs text-blue-500"
-                htmlFor="specialmonitors"
-              >
-                Special Monitors
-              </label>
-
-              <div id="specialmonitors">
-                <input
-                  type="checkbox"
-                  id="csf"
-                  className={checkboxstyle}
-                  checked={csf}
-                  onChange={() => {
-                    setCsf((csf) => !csf);
-                  }}
-                />
-                <label className={checkboxlabelstyle} htmlFor="csf">
-                  CSF Drain
-                </label>
-                <br />
-
-                <input
-                  type="checkbox"
-                  id="epmonitor"
-                  className={checkboxstyle}
-                  checked={epm}
-                  onChange={() => {
-                    setEpm((epm) => !epm);
-                  }}
-                />
-                <label className={checkboxlabelstyle} htmlFor="epmonitor">
-                  Electrophysiologic monitor
-                </label>
-                <br />
-
-                <input
-                  type="checkbox"
-                  id="tee"
-                  className={checkboxstyle}
-                  checked={tee}
-                  onChange={() => {
-                    setTee((tee) => !tee);
-                  }}
-                />
-                <label className={checkboxlabelstyle} htmlFor="tee">
-                  TEE
-                </label>
-                <br />
-              </div>
-            </div>
+        </div>
+        <div className="flex flex-col pr-2">
+          {asaClass !== "6" && (
+            <SimpleDropdown
+              label="Emergency?"
+              options={["No", "Trauma", "Non-Trauma"]}
+              value={isEmergency}
+              setValue={setIsEmergency}
+            />
+          )}
+        </div>
+        <div className="flex flex-col pr-2">
+            <SimpleDropdown
+              label="Difficult Airway?"
+              options={["No", "Anticipated", "Unanticipated"]}
+              value={isDifficultAirway}
+              setValue={setIsDifficultAirway}
+            />
+        </div>
+      </div>
+  
+      <div className="flex">
+        <div className="flex flex-col">
+          <SimpleDropdown
+            label="Primary Anesthesia"
+            options={["GA", "MAC", "Spinal", "Epidural", "CSE", "GA + Epidural"]}
+            value={anesType}
+            setValue={setAnesType}
+          />
+        </div>
+      </div>
+  
+      <div className="flex">
+        <div className="flex flex-col items-start pr-2">
+          <SimpleDropdown
+            label="Masked?"
+            options={["Yes", "No"]}
+            value={masked}
+            setValue={setMasked}
+          />
+        </div>
+        <div className="flex flex-col">
+          <SimpleDropdown
+            label="Airway"
+            options={
+              anesType === "MAC"
+                ? ["Natural"]
+                : [
+                    "Natural",
+                    "Direct Oral",
+                    "Indirect Oral",
+                    "LMA",
+                    "Direct Nasal",
+                    "Indirect Nasal",
+                  ]
+            }
+            value={airway}
+            setValue={setAirway}
+          />
+        </div>
+      </div>
+  
+      <SimpleDropdown
+        label="Procedure Category"
+        options={[
+          "Default",
+          "Cardiac",
+          "Intrathoracic",
+          "Major Vascular",
+          "Intracerebral",
+          "Delivery",
+        ]}
+        value={category}
+        setValue={setCategory}
+      />
+  
+      <Subcategory category={category} />
+  
+      <div className="flex mt-1.5">
+        <div>
+          <label className="text-xs text-blue-500" htmlFor="access">
+            Access
+          </label>
+          <div id="access">
+            <input
+              type="checkbox"
+              id="ultrasound"
+              className={checkboxstyle}
+              checked={ultrasound}
+              onChange={() => {
+                setUltrasound((ultrasound) => !ultrasound);
+              }}
+            />
+            <label className={checkboxlabelstyle} htmlFor="ultrasound">
+              Ultrasound-guided access
+            </label>
+            <br />
+  
+            <input
+              type="checkbox"
+              id="aline"
+              className={checkboxstyle}
+              checked={aline}
+              onChange={() => {
+                setAline((aline) => !aline);
+              }}
+            />
+            <label className={checkboxlabelstyle} htmlFor="aline">
+              Arterial line
+            </label>
+            <br />
+  
+            <input
+              type="checkbox"
+              id="cline"
+              className={checkboxstyle}
+              checked={cline}
+              onChange={() => {
+                setCline((cline) => !cline);
+              }}
+            />
+            <label className={checkboxlabelstyle} htmlFor="cline">
+              Central line
+            </label>
+            <br />
+  
+            <input
+              type="checkbox"
+              id="pacath"
+              className={checkboxstyle}
+              checked={pacath}
+              onChange={() => {
+                setPacath((pacath) => !pacath);
+              }}
+            />
+            <label className={checkboxlabelstyle} htmlFor="pacath">
+              Pulmonary artery catheter
+            </label>
+            <br />
           </div>
-  </>
+        </div>
+  
+        <div className="pl-5">
+          <label className="text-xs text-blue-500" htmlFor="specialmonitors">
+            Special Monitors
+          </label>
+          <div id="specialmonitors">
+            <input
+              type="checkbox"
+              id="csf"
+              className={checkboxstyle}
+              checked={csf}
+              onChange={() => {
+                setCsf((csf) => !csf);
+              }}
+            />
+            <label className={checkboxlabelstyle} htmlFor="csf">
+              CSF Drain
+            </label>
+            <br />
+  
+            <input
+              type="checkbox"
+              id="epmonitor"
+              className={checkboxstyle}
+              checked={epm}
+              onChange={() => {
+                setEpm((epm) => !epm);
+              }}
+            />
+            <label className={checkboxlabelstyle} htmlFor="epmonitor">
+              Electrophysiologic monitor
+            </label>
+            <br />
+  
+            <input
+              type="checkbox"
+              id="tee"
+              className={checkboxstyle}
+              checked={tee}
+              onChange={() => {
+                setTee((tee) => !tee);
+              }}
+            />
+            <label className={checkboxlabelstyle} htmlFor="tee">
+              TEE
+            </label>
+            <br />
+          </div>
+        </div>
+      </div>
+    </>
+  );
 
-  const blockTab = <>
-  <div className="flex mt-1.5">
-  <div>
-    <label className="text-xs text-blue-500" htmlFor="upperextremityblocks">
-      Upper Extremity Blocks
-    </label>
+  const blockTab = (
+    <>
+      <div className="flex mt-1.5">
+        <div>
+          <label className="text-xs text-blue-500" htmlFor="blockType">
+            Block Type
+          </label>
+          <div id="blockType">
+            <input
+              type="checkbox"
+              id="Continuous"
+              className={checkboxstyle}
+              checked={continuous}
+              onChange={() => {
+                setContinuous((continuous) => !continuous);
+              }}
+            />
+            <label className={checkboxlabelstyle} htmlFor="Continuous">
+              Continuous
+            </label>
+            <br />
+  
+            <input
+              type="checkbox"
+              id="single"
+              className={checkboxstyle}
+              checked={single}
+              onChange={() => {
+                setSingle((single) => !single);
+              }}
+            />
+            <label className={checkboxlabelstyle} htmlFor="single">
+              Single shot
+            </label>
+            <br />
+          </div>
+        </div>
+  
+        <div className="pl-4">
+          <label className="text-xs text-blue-500" htmlFor="upperextremityblocks">
+            Upper Extremity Blocks
+          </label>
+          <div id="upperextremityblocks">
+            <input
+              type="checkbox"
+              id="axillary"
+              className={checkboxstyle}
+              checked={axillary}
+              onChange={() => {
+                setAxillary((axillary) => !axillary);
+              }}
+            />
+            <label className={checkboxlabelstyle} htmlFor="axillary">
+              Axillary
+            </label>
+            <br />
+  
+            <input
+              type="checkbox"
+              id="infraclavicular"
+              className={checkboxstyle}
+              checked={infraclavicular}
+              onChange={() => {
+                setInfraclavicular((infraclavicular) => !infraclavicular);
+              }}
+            />
+            <label className={checkboxlabelstyle} htmlFor="infraclavicular">
+              Infraclavicular
+            </label>
+            <br />
+  
+            <input
+              type="checkbox"
+              id="interscalene"
+              className={checkboxstyle}
+              checked={interscalene}
+              onChange={() => {
+                setInterscalene((interscalene) => !interscalene);
+              }}
+            />
+            <label className={checkboxlabelstyle} htmlFor="interscalene">
+              Interscalene
+            </label>
+            <br />
+  
+            <input
+              type="checkbox"
+              id="supraclavicular"
+              className={checkboxstyle}
+              checked={supraclavicular}
+              onChange={() => {
+                setSupraclavicular((supraclavicular) => !supraclavicular);
+              }}
+            />
+            <label className={checkboxlabelstyle} htmlFor="supraclavicular">
+              Supraclavicular
+            </label>
+            <br />
+          </div>
+        </div>
+  
+        <div className="pl-4">
+          <label className="text-xs text-blue-500" htmlFor="lowerextremityblocks">
+            Lower Extremity Blocks
+          </label>
+          <div id="lowerextremityblocks">
+            <input
+              type="checkbox"
+              id="adductorcanal"
+              className={checkboxstyle}
+              checked={adductorCanal}
+              onChange={() => {
+                setAdductorCanal((adductorCanal) => !adductorCanal);
+              }}
+            />
+            <label className={checkboxlabelstyle} htmlFor="adductorcanal">
+              Adductor Canal
+            </label>
+            <br />
 
-    <div id="upperextremityblocks">
-      <input
-        type="checkbox"
-        id="axillary"
-        className={checkboxstyle}
-        checked={axillary}
-        onChange={() => {
-          setAxillary((axillary) => !axillary);
-        }}
-      />
-      <label className={checkboxlabelstyle} htmlFor="axillary">
-        Axillary
-      </label>
-      <br />
-
-      <input
-        type="checkbox"
-        id="infraclavicular"
-        className={checkboxstyle}
-        checked={infraclavicular}
-        onChange={() => {
-          setInfraclavicular((infraclavicular) => !infraclavicular);
-        }}
-      />
-      <label className={checkboxlabelstyle} htmlFor="infraclavicular">
-        Infraclavicular
-      </label>
-      <br />
-
-      <input
-        type="checkbox"
-        id="interscalene"
-        className={checkboxstyle}
-        checked={interscalene}
-        onChange={() => {
-          setInterscalene((interscalene) => !interscalene);
-        }}
-      />
-      <label className={checkboxlabelstyle} htmlFor="interscalene">
-        Interscalene
-      </label>
-      <br />
-
-      <input
-        type="checkbox"
-        id="supraclavicular"
-        className={checkboxstyle}
-        checked={supraclavicular}
-        onChange={() => {
-          setSupraclavicular((supraclavicular) => !supraclavicular);
-        }}
-      />
-      <label className={checkboxlabelstyle} htmlFor="supraclavicular">
-        Supraclavicular
-      </label>
-      <br />
-    </div>
-  </div>
-
-  <div className="pl-5">
-    <label className="text-xs text-blue-500" htmlFor="lowerextremityblocks">
-      Lower Extremity Blocks
-    </label>
-
-    <div id="lowerextremityblocks">
-      <input
-        type="checkbox"
-        id="adductorcanal"
-        className={checkboxstyle}
-        checked={adductorCanal}
-        onChange={() => {
-          setAdductorCanal((adductorCanal) => !adductorCanal);
-        }}
-      />
-      <label className={checkboxlabelstyle} htmlFor="adductorcanal">
-        Adductor Canal
-      </label>
-      <br />
-
-      <input
-        type="checkbox"
-        id="femoral"
-        className={checkboxstyle}
-        checked={femoral}
-        onChange={() => {
-          setFemoral((femoral) => !femoral);
-        }}
-      />
-      <label className={checkboxlabelstyle} htmlFor="femoral">
-        Femoral
-      </label>
-      <br />
-
-      <input
-        type="checkbox"
-        id="popliteal"
-        className={checkboxstyle}
-        checked={popliteal}
-        onChange={() => {
-          setPopliteal((popliteal) => !popliteal);
-        }}
-      />
-      <label className={checkboxlabelstyle} htmlFor="popliteal">
-        Popliteal
-      </label>
-      <br />
-
-      <input
-        type="checkbox"
-        id="saphenous"
-        className={checkboxstyle}
-        checked={saphenous}
-        onChange={() => {
-          setSaphenous((saphenous) => !saphenous);
-        }}
-      />
-      <label className={checkboxlabelstyle} htmlFor="saphenous">
-        Saphenous
-      </label>
-      <br />
-
-      <input
-        type="checkbox"
-        id="sciatic"
-        className={checkboxstyle}
-        checked={sciatic}
-        onChange={() => {
-          setSciatic((sciatic) => !sciatic);
-        }}
-      />
-      <label className={checkboxlabelstyle} htmlFor="sciatic">
-        Sciatic
-      </label>
-      <br />
-    </div>
-  </div>
-
-  <div className="pl-5">
-    <label className="text-xs text-blue-500" htmlFor="trunkabdominalblocks">
-      Trunk and Abdominal Blocks
-    </label>
-
-    <div id="trunkabdominalblocks">
-      <input
-        type="checkbox"
-        id="erectorSpinaePlane"
-        className={checkboxstyle}
-        checked={erectorSpinaePlane}
-        onChange={() => {
-          setErectorSpinaePlane((erectorSpinaePlane) => !erectorSpinaePlane);
-        }}
-      />
-      <label className={checkboxlabelstyle} htmlFor="erectorSpinaePlane">
-        Erector Spinae Plane
-      </label>
-      <br />
-
-      <input
-        type="checkbox"
-        id="lumbarPlexus"
-        className={checkboxstyle}
-        checked={lumbarPlexus}
-        onChange={() => {
-          setLumbarPlexus((lumbarPlexus) => !lumbarPlexus);
-        }}
-      />
-      <label className={checkboxlabelstyle} htmlFor="lumbarPlexus">
-        Lumbar Plexus
-      </label>
-      <br />
-
-      <input
-        type="checkbox"
-        id="paravertebral"
-        className={checkboxstyle}
-        checked={paravertebral}
-        onChange={() => {
-          setParavertebral((paravertebral) => !paravertebral);
-        }}
-      />
-      <label className={checkboxlabelstyle} htmlFor="paravertebral">
-        Paravertebral
-      </label>
-      <br />
-
-      <input
-        type="checkbox"
-        id="quadratusLumborum"
-        className={checkboxstyle}
-        checked={quadratusLumborum}
-        onChange={() => {
-          setQuadratusLumborum((quadratusLumborum) => !quadratusLumborum);
-        }}
-      />
-      <label className={checkboxlabelstyle} htmlFor="quadratusLumborum">
-        Quadratus Lumborum
-      </label>
-      <br />
-
-      <input
-        type="checkbox"
-        id="transversusAbdominalPlane"
-        className={checkboxstyle}
-        checked={transversusAbdominalPlane}
-        onChange={() => {
-          setTransverseAbdominalPlane(
-            (transversusAbdominalPlane) => !transversusAbdominalPlane
-          );
-        }}
-      />
-      <label className={checkboxlabelstyle} htmlFor="transversusAbdominalPlane">
-        Transversus Abdominal Plane
-      </label>
-      <br />
-    </div>
-  </div>
-
-  <div className="pl-5">
-    <label className="text-xs text-blue-500" htmlFor="otherblocks">
-      Other
-    </label>
-
-    <div id="otherblocks">
-      <input
-        type="checkbox"
-        id="retrobulbar"
-        className={checkboxstyle}
-        checked={retrobulbar}
-        onChange={() => {
-          setRetrobulbar((retrobulbar) => !retrobulbar);
-        }}
-      />
-      <label className={checkboxlabelstyle} htmlFor="retrobulbar">
-        Retrobulbar
-      </label>
-      <br />
-
-      <input
-        type="checkbox"
-        id="ankle"
-        className={checkboxstyle}
-        checked={ankle}
-        onChange={() => {
-          setAnkle((ankle) => !ankle);
-        }}
-      />
-      <label className={checkboxlabelstyle} htmlFor="ankle">
-        Ankle
-      </label>
-      <br />
-
-      <input
-        type="checkbox"
-        id="other"
-        className={checkboxstyle}
-        checked={other}
-        onChange={() => {
-          setOther((other) => !other);
-        }}
-      />
-      <label className={checkboxlabelstyle} htmlFor="other">
-        Other
-      </label>
-      <br />
-    </div>
-  </div>
-</div>
-  </>
+            <input
+              type="checkbox"
+              id="ankle"
+              className={checkboxstyle}
+              checked={ankle}
+              onChange={() => {
+                setAnkle((ankle) => !ankle);
+              }}
+            />
+            <label className={checkboxlabelstyle} htmlFor="ankle">
+              Ankle
+            </label>
+            <br />
+  
+            <input
+              type="checkbox"
+              id="femoral"
+              className={checkboxstyle}
+              checked={femoral}
+              onChange={() => {
+                setFemoral((femoral) => !femoral);
+              }}
+            />
+            <label className={checkboxlabelstyle} htmlFor="femoral">
+              Femoral
+            </label>
+            <br />
+  
+            <input
+              type="checkbox"
+              id="popliteal"
+              className={checkboxstyle}
+              checked={popliteal}
+              onChange={() => {
+                setPopliteal((popliteal) => !popliteal);
+              }}
+            />
+            <label className={checkboxlabelstyle} htmlFor="popliteal">
+              Popliteal
+            </label>
+            <br />
+  
+            <input
+              type="checkbox"
+              id="saphenous"
+              className={checkboxstyle}
+              checked={saphenous}
+              onChange={() => {
+                setSaphenous((saphenous) => !saphenous);
+              }}
+            />
+            <label className={checkboxlabelstyle} htmlFor="saphenous">
+              Saphenous
+            </label>
+            <br />
+  
+            <input
+              type="checkbox"
+              id="sciatic"
+              className={checkboxstyle}
+              checked={sciatic}
+              onChange={() => {
+                setSciatic((sciatic) => !sciatic);
+              }}
+            />
+            <label className={checkboxlabelstyle} htmlFor="sciatic">
+              Sciatic
+            </label>
+            <br />
+          </div>
+        </div>
+      </div>
+  
+      <div className="flex mt-1.5">
+        <div>
+          <label className="text-xs text-blue-500" htmlFor="trunkabdominalblocks">
+            Trunkal Blocks
+          </label>
+          <div id="trunkabdominalblocks">
+            <input
+              type="checkbox"
+              id="erectorSpinaePlane"
+              className={checkboxstyle}
+              checked={erectorSpinaePlane}
+              onChange={() => {
+                setErectorSpinaePlane((erectorSpinaePlane) => !erectorSpinaePlane);
+              }}
+            />
+            <label className={checkboxlabelstyle} htmlFor="erectorSpinaePlane">
+              ESP
+            </label>
+            <br />
+  
+            <input
+              type="checkbox"
+              id="lumbarPlexus"
+              className={checkboxstyle}
+              checked={lumbarPlexus}
+              onChange={() => {
+                setLumbarPlexus((lumbarPlexus) => !lumbarPlexus);
+              }}
+            />
+            <label className={checkboxlabelstyle} htmlFor="lumbarPlexus">
+              Lumbar Plexus
+            </label>
+            <br />
+  
+            <input
+              type="checkbox"
+              id="paravertebral"
+              className={checkboxstyle}
+              checked={paravertebral}
+              onChange={() => {
+                setParavertebral((paravertebral) => !paravertebral);
+              }}
+            />
+            <label className={checkboxlabelstyle} htmlFor="paravertebral">
+              Paravertebral
+            </label>
+            <br />
+  
+            <input
+              type="checkbox"
+              id="quadratusLumborum"
+              className={checkboxstyle}
+              checked={quadratusLumborum}
+              onChange={() => {
+                setQuadratusLumborum((quadratusLumborum) => !quadratusLumborum);
+              }}
+            />
+            <label className={checkboxlabelstyle} htmlFor="quadratusLumborum">
+              QL
+            </label>
+            <br />
+  
+            <input
+              type="checkbox"
+              id="transversusAbdominalPlane"
+              className={checkboxstyle}
+              checked={transversusAbdominalPlane}
+              onChange={() => {
+                setTransversusAbdominalPlane(
+                  (transversusAbdominalPlane) => !transversusAbdominalPlane
+                );
+              }}
+            />
+            <label
+              className={checkboxlabelstyle}
+              htmlFor="transversusAbdominalPlane"
+            >
+              TAP
+            </label>
+            <br />
+          </div>
+        </div>
+  
+        <div className="pl-4">
+          <label className="text-xs text-blue-500" htmlFor="otherblocks">
+            Other
+          </label>
+          <div id="otherblocks">
+            <input
+              type="checkbox"
+              id="retrobulbar"
+              className={checkboxstyle}
+              checked={retrobulbar}
+              onChange={() => {
+                setRetrobulbar((retrobulbar) => !retrobulbar);
+              }}
+            />
+            <label className={checkboxlabelstyle} htmlFor="retrobulbar">
+              Retrobulbar
+            </label>
+            <br />
+  
+  
+            <input
+              type="checkbox"
+              id="other"
+              className={checkboxstyle}
+              checked={other}
+              onChange={() => {
+                setOther((other) => !other);
+              }}
+            />
+            <label className={checkboxlabelstyle} htmlFor="other">
+              Other
+            </label>
+            <br />
+          </div>
+        </div>
+      </div>
+    </>
+  );
 
   const tabs = [
     { label: 'Anesthesia', content: anesTab},
     { label: 'Nerve Blocks', content: blockTab },
   ];
+
+  const [activeTab, setActiveTab] = useState(tabs[0].label);
+
+
 
   return (
     <div id="background" className="p-2 h-full bg-slate-800">
@@ -741,10 +838,7 @@ function App() {
             />
           </div>
 
-          <Tab tabs={tabs} />
-
-
-          
+          <Tab tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
 
           <div id="form-buttons" className="mt-2.5">
             <button
