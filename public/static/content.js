@@ -99,29 +99,54 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     var oral = document.getElementById("156654");
     var nasal = document.getElementById("156655");
     var mask = document.getElementById("156650");
-  
+    var bronch = document.getElementById("2298046");
+
+    var bronchialBlocker = document.getElementById("156674");
+    var dlt = document.getElementById("1256336");
+    var jet = document.getElementById("156666");
+    var awake = document.getElementById("2298047");
+
     lma.checked = false;
     direct.checked = false;
     indirect.checked = false;
     oral.checked = false;
     nasal.checked = false;
-    mask.checked = request.masked;
+    mask.checked = false;
+    bronch.checked = false;
+    bronchialBlocker.checked = false;
+    dlt.checked = false;
+    jet.checked = false;
+    awake.checked = false;
+    
   
-    if (request.airway == "Direct Oral") {
-      direct.checked = true;
+    if (request.airwayDevice == "Oral ETT") {
       oral.checked = true;
-    } else if (request.airway == "Indirect Oral") {
-      indirect.checked = true;
-      oral.checked = true;
-    } else if (request.airway == "LMA") {
+    } else if (request.airwayDevice == "Nasal ETT") {
+      nasal.checked = true;
+    } else if (request.airwayDevice == "LMA") {
       lma.checked = true;
-    } else if (request.airway == "Direct Nasal") {
-      direct.checked = true;
-      nasal.checked = true;
-    } else if (request.airway == "Indirect Nasal") {
-      indirect.checked = true;
-      nasal.checked = true;
+
+    } else if (request.airwayDevice == "Mask Only")  {
+      mask.checked = true;
     }
+
+    if (request.directLaryngoscopy) {
+      direct.checked = true;
+    }
+
+    if (request.indirectLaryngoscopy) {
+      indirect.checked = true;
+    }
+
+    if (request.flexibleBronchoscopy) {
+      bronch.checked = true;
+    }
+
+    if (request.dlt) { dlt.checked = true; }
+    if (request.bronchialBlocker) { bronchialBlocker.checked = true; }
+    if (request.jetVentilation) { jet.checked = true; }
+    if (request.awakeIntubation) { awake.checked = true; }
+
   
     var cardiacnocpb = document.getElementById("156682");
     var cardiaccpb = document.getElementById("156681");

@@ -37,8 +37,6 @@ function App() {
   const [isDifficultAirway, setIsDifficultAirway] = useStickyState("No", "isDifficultAirway");
 
   const [anesType, setAnesType] = useStickyState("GA", "anesType");
-  const [airway, setAirway] = useStickyState("Direct Oral", "airway");
-  const [masked, setMasked] = useStickyState("Yes", "masked");
 
   const [category, setCategory] = useStickyState("Default", "category");
   const [subcategory, setSubcategory] = useStickyState("None", "subcategory");
@@ -52,6 +50,21 @@ function App() {
   const [tee, setTee] = useStickyState(false, "tee");
 
   const [currentUrl, setCurrentUrl] = useState("");
+
+  // 2025 April Update
+
+  const [airwayDevice, setAirwayDevice] = useStickyState("Oral ETT", "airwayDevice");
+  const [directLaryngoscopy, setDirectLaryngoscopy] = useStickyState(false, "directLaryngoscopy");
+  const [indirectLaryngoscopy, setIndirectLaryngoscopy] = useStickyState(false, "indirectLaryngoscopy");
+  const [flexibleBronchoscopy, setFlexibleBronchoscopy] = useStickyState(false, "flexibleBronchoscopy");
+  const [dlt, setDlt] = useStickyState(false, "dlt");
+  const [bronchialBlocker, setBronchialBlocker] = useStickyState(false, "bronchialBlocker");
+  const [jetVentilation, setJetVentilation] = useStickyState(false, "jetVentilation");
+  const [awakeIntubation, setAwakeIntubation] = useStickyState(false, "awakeIntubation");
+
+
+
+  // End April Update
 
   const [continuous, setContinuous] = useStickyState(false, 'continuous');
   const [single, setSingle] = useStickyState(false, 'single');
@@ -98,8 +111,6 @@ function App() {
       setIsEmergency("No");
       setIsDifficultAirway("No")
       setAnesType("GA");
-      setAirway("Direct Oral");
-      setMasked(true);
       setCategory("Default");
       setSubcategory("None");
       setUltrasound(false);
@@ -109,6 +120,17 @@ function App() {
       setCsf(false);
       setEpm(false);
       setTee(false);
+
+      setAirwayDevice("Oral ETT");
+      setDirectLaryngoscopy(true);
+      setIndirectLaryngoscopy(false);
+      setFlexibleBronchoscopy(false);
+
+      setDlt(false);
+      setBronchialBlocker(false);
+      setJetVentilation(false);
+      setAwakeIntubation(false);
+
     } else if (activeTab == "Nerve Blocks") {
       setContinuous(false);
       setSingle(false);
@@ -133,10 +155,27 @@ function App() {
   };
 
   useEffect(() => {
+    console.log("useEffect")
     if (asaClass == "6") {
       setIsEmergency("No");
     }
+
   }, []);
+
+  useEffect(() => {
+
+
+    if (!["Oral ETT", "Nasal ETT"].includes(airwayDevice)) {
+      setDirectLaryngoscopy(false);
+      setIndirectLaryngoscopy(false);
+      setFlexibleBronchoscopy(false);
+      setDlt(false);
+      setBronchialBlocker(false);
+      setJetVentilation(false);
+      setAwakeIntubation(false);
+    }
+
+  }, [airwayDevice]);
 
   const Subcategory = (props) => {
     switch (props.category) {
@@ -208,8 +247,6 @@ function App() {
           isEmergency,
           isDifficultAirway,
           anesType,
-          airway,
-          masked: masked == "Yes",
           category,
           subcategory,
           ultrasound,
@@ -219,6 +256,14 @@ function App() {
           csf,
           epm,
           tee,
+
+          airwayDevice,
+          directLaryngoscopy, indirectLaryngoscopy, flexibleBronchoscopy,
+          dlt,
+          bronchialBlocker,
+          jetVentilation,
+          awakeIntubation,
+      
           submit: doSubmit,
         });
       } else if (activeTab == "Nerve Blocks") {
@@ -310,35 +355,74 @@ function App() {
       </div>
   
       <div className="flex">
-        <div className="flex flex-col items-start pr-2">
-          <SimpleDropdown
-            label="Masked?"
-            options={["Yes", "No"]}
-            value={masked}
-            setValue={setMasked}
+
+
+        <div className="flex flex-col mt-2">
+            <SimpleDropdown
+              label="Airway Device"
+              options={["Oral ETT", "Nasal ETT", "LMA", "Mask Only", "Natural"]}
+              value={airwayDevice}
+              setValue={setAirwayDevice}
+            />
+
+{(["Oral ETT", "Nasal ETT"].includes(airwayDevice)) && (
+    <>
+      <div className="mt-2 text-xs text-blue-500">Airway Technique</div>
+      <div className="mt-0.5 flex flex-wrap space-x-4">
+        <label className="flex items-center text-xs">
+          <input
+            type="checkbox"
+            className={checkboxstyle}
+            checked={directLaryngoscopy}
+            onChange={() => setDirectLaryngoscopy(v => !v)}
           />
-        </div>
-        <div className="flex flex-col">
-          <SimpleDropdown
-            label="Airway"
-            options={
-              anesType === "MAC"
-                ? ["Natural"]
-                : [
-                    "Natural",
-                    "Direct Oral",
-                    "Indirect Oral",
-                    "LMA",
-                    "Direct Nasal",
-                    "Indirect Nasal",
-                  ]
-            }
-            value={airway}
-            setValue={setAirway}
+          <span className={checkboxlabelstyle}>Direct Laryngoscopy</span>
+        </label>
+        <label className="flex items-center text-xs">
+          <input
+            type="checkbox"
+            className={checkboxstyle}
+            checked={indirectLaryngoscopy}
+            onChange={() => setIndirectLaryngoscopy(v => !v)}
           />
-        </div>
+          <span className={checkboxlabelstyle}>Indirect Laryngoscopy</span>
+        </label>
+        <label className="flex items-center text-xs">
+          <input
+            type="checkbox"
+            className={checkboxstyle}
+            checked={flexibleBronchoscopy}
+            onChange={() => setFlexibleBronchoscopy(v => !v)}
+          />
+          <span className={checkboxlabelstyle}>Flexible Bronchoscopy</span>
+        </label>
+      </div>
+
+            <div className="mt-1 text-xs text-blue-500">Airway Modifiers</div>
+            <div className="mt-0.5 flex flex-wrap space-x-4">
+              <label className="flex items-center text-xs">
+                <input type="checkbox" className={checkboxstyle} checked={dlt} onChange={() => setDlt(v => !v)} />
+                <span className={checkboxlabelstyle}>DLT</span>
+              </label>
+              <label className="flex items-center text-xs">
+                <input type="checkbox" className={checkboxstyle} checked={bronchialBlocker} onChange={() => setBronchialBlocker(v => !v)} />
+                <span className={checkboxlabelstyle}>Bronchial blocker</span>
+              </label>
+              <label className="flex items-center text-xs">
+                <input type="checkbox" className={checkboxstyle} checked={jetVentilation} onChange={() => setJetVentilation(v => !v)} />
+                <span className={checkboxlabelstyle}>Jet ventilation</span>
+              </label>
+              <label className="flex items-center text-xs">
+                <input type="checkbox" className={checkboxstyle} checked={awakeIntubation} onChange={() => setAwakeIntubation(v => !v)} />
+                <span className={checkboxlabelstyle}>Awake intubation</span>
+              </label>
+            </div>
+          </>)}
+          </div>
       </div>
   
+      <div className = "mt-2"
+      ></div>
       <SimpleDropdown
         label="Procedure Category"
         options={[
@@ -801,7 +885,7 @@ function App() {
         &#128137;ACGME Anesthesia Case Log Helper
       </h1>
       <h2 className="text-white italic text-xs">Created by jamescho7</h2>
-      <h2 className="text-white italic text-xs">Updated 6/15/24</h2>
+      <h2 className="text-white italic text-xs">Updated 4/19/25</h2>
 
 
 
