@@ -89,18 +89,18 @@ function App() {
 
 
 
-  chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
-    if (tabs[0].url) {
-      setCurrentUrl(tabs[0].url);
-    }
-  });
-
-  chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-    let url = tab.url;
-    if (url) {
-      setCurrentUrl(url);
-    }
-  });
+  useEffect(() => {
+    chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+      if (tabs[0].url) setCurrentUrl(tabs[0].url);
+    });
+  
+    const handler = (_, changeInfo, tab) => {
+      if (tab.url) setCurrentUrl(tab.url);
+    };
+    chrome.tabs.onUpdated.addListener(handler);
+  
+    return () => chrome.tabs.onUpdated.removeListener(handler);
+  }, []);
 
   const reset = () => {
 
@@ -357,7 +357,7 @@ function App() {
       <div className="flex">
 
 
-        <div className="flex flex-col mt-2">
+        <div className="flex flex-col">
             <SimpleDropdown
               label="Airway Device"
               options={["Oral ETT", "Nasal ETT", "LMA", "Mask Only", "Natural"]}
@@ -881,18 +881,21 @@ function App() {
 
   return (
     <div id="background" className="p-2 h-full bg-slate-800">
-      <h1 className="inline text-sm text-white font-bold">
+      <h1 className="inline text-sm text-white font-bold px-2">
         &#128137;ACGME Anesthesia Case Log Helper
       </h1>
-      <h2 className="text-white italic text-xs">Created by jamescho7</h2>
-      <h2 className="text-white italic text-xs">Updated 4/19/25</h2>
+      <h2 className="text-blue-500 font-semibold text-xs px-2">Created by jamescho7 | Updated 4/19/25</h2>
 
 
 
       {active && (
         <>
-          <div className="pt-2 flex flex-col items-start">
-            <label className="text-xs text-blue-500" htmlFor="date-picker">
+            <div className="flex flex-row justify-start items-end gap-4 px-2 pt-2">
+          <div className="flex flex-col items-start">
+            <label
+              htmlFor="date-picker"
+              className="text-xs text-blue-500 mb-1"
+            >
               Case Date
             </label>
             <input
@@ -907,9 +910,9 @@ function App() {
             />
           </div>
 
-          <div className="flex flex-col pr-2">
+          <div className="flex flex-col">
             <SimpleDropdown
-              label="Age"
+              label="Patient Age"
               options={[
                 "<3 mos.",
                 "3 mos to 2 years",
@@ -921,43 +924,44 @@ function App() {
               setValue={setAgeCategory}
             />
           </div>
+        </div>
 
           <Tab tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
 
-          <div id="form-buttons" className="mt-2.5">
-            <button
-              onClick={() => {
-                sendMessage(false);
-              }}
-              className="px-3 py-1 border-2 rounded-md text-xs mr-2"
-              id="fill-button"
-            >
-              Fill
-            </button>
-            <button
-              onClick={() => {
-                sendMessage(true);
-              }}
-              className="px-3 py-1 mr-2 border-2 rounded-md text-xs hover:border-blue-500 border-blue-600 bg-blue-600 hover:bg-blue-500"
-              id="submit-button"
-            >
-              Fill and Submit
-            </button>
+          <div id="form-buttons" className="bg-slate-900 pl-4 pb-2">
+  <button
+    onClick={() => {
+      sendMessage(false);
+    }}
+    className="px-3 py-1 border-2 rounded-md text-xs mr-2 border-amber-400 text-amber-400 hover:bg-amber-400 hover:text-black"
+    id="fill-button"
+  >
+    Fill
+  </button>
+  <button
+    onClick={() => {
+      sendMessage(true);
+    }}
+    className="px-3 py-1 mr-2 border-2 rounded-md text-xs border-amber-500 bg-amber-500 hover:bg-amber-400 hover:border-amber-400 text-black"
+    id="submit-button"
+  >
+    Fill and Submit
+  </button>
 
-            <button
-              onClick={() => {
-                reset();
-              }}
-              className="px-3 py-1 border-2 rounded-md text-xs hover:border-blue-500 border-blue-600 bg-blue-600 hover:bg-blue-500"
-              id="submit-button"
-            >
-              Reset Values
-            </button>
-          </div>
+  <button
+    onClick={() => {
+      reset();
+    }}
+    className="px-3 py-1 border-2 rounded-md text-xs border-amber-500 bg-amber-500 hover:bg-amber-400 hover:border-amber-400 text-black"
+    id="reset-button"
+  >
+    Reset Values
+  </button>
+</div>
         </>
       )}
       {!active && (
-        <>
+        <div className="mx-2">
           <h2 className="mt-4">
             You must be logged into the ACGME case entry site to continue.
           </h2>
@@ -973,7 +977,7 @@ function App() {
           >
             Open ACGME Site
           </button>
-        </>
+        </div>
       )}
     </div>
   );

@@ -1,49 +1,49 @@
-import { useEffect } from "react";
+import React, { useEffect } from 'react';
 
-const SimpleDropdown = (props) => {
-  const lowercaseLabel = props.label.toLowerCase();
+const SimpleDropdown = ({ label, options, value, setValue, suffix }) => {
+  // generate a clean HTML id
+  const id = label.toLowerCase().replace(/\s+/g, '-');
 
-  const getCurrentStyle = (element) => {
-    const baseStyle =
-      "py-0.5 px-1 border-l-[1px] border-y-[1px] cursor-pointer";
-    const lastStyle = baseStyle + " border-r-[1px]";
-
-    if (props.options.at(-1) == element) {
-      return element == props.value ? lastStyle + " bg-blue-500" : lastStyle;
-    } else {
-      return element == props.value ? baseStyle + " bg-blue-500" : baseStyle;
-    }
-  };
-
+  // ensure value is always one of the options
   useEffect(() => {
-    if (!props.options.includes(props.value)) {
-      props.setValue(props.options.at(0));
+    if (!options.includes(value)) {
+      setValue(options[0]);
     }
-  }, [props.options]);
+  }, [options, value, setValue]);
 
   return (
-    <div className="py-0.5">
-      <label className="text-xs text-blue-500" htmlFor={lowercaseLabel}>
-        {props.label}
-      </label>
-
-      <div id={lowercaseLabel} className="flex">
-        {props.options.map((element) => (
-          <div
-            key={element}
-            value={props.value}
-            className={getCurrentStyle(element)}
-            onClick={() => {
-              props.setValue(element);
-            }}
-          >
-            <p className="text-xs">
-              {element + (props.suffix ? props.suffix : "")}
-            </p>
-          </div>
-        ))}
+    <fieldset className="mt-2">
+      <legend className="text-xs text-blue-500 mb-1">{label}</legend>
+      <div
+        id={id}
+        role="group"
+        aria-labelledby={id + '-legend'}
+        className="inline-flex border border-blue-500 rounded-lg overflow-hidden"
+      >
+        {options.map((opt, idx) => {
+          const isSelected = opt === value;
+          return (
+            <button
+              key={opt}
+              type="button"
+              onClick={() => setValue(opt)}
+              className={[
+                'px-1 py-0.5 text-xs font-medium transition',
+                isSelected
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-slate-900 text-white hover:bg-blue-400',
+                idx < options.length - 1 && 'border-r border-blue-500'
+              ]
+                .filter(Boolean)
+                .join(' ')}
+            >
+              {opt}
+              {suffix && <span className="ml-0.5">{suffix}</span>}
+            </button>
+          );
+        })}
       </div>
-    </div>
+    </fieldset>
   );
 };
 
