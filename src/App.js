@@ -54,7 +54,7 @@ function App() {
   // 2025 April Update
 
   const [airwayDevice, setAirwayDevice] = useStickyState("Oral ETT", "airwayDevice");
-  const [directLaryngoscopy, setDirectLaryngoscopy] = useStickyState(false, "directLaryngoscopy");
+  const [directLaryngoscopy, setDirectLaryngoscopy] = useStickyState(true, "directLaryngoscopy");
   const [indirectLaryngoscopy, setIndirectLaryngoscopy] = useStickyState(false, "indirectLaryngoscopy");
   const [flexibleBronchoscopy, setFlexibleBronchoscopy] = useStickyState(false, "flexibleBronchoscopy");
   const [dlt, setDlt] = useStickyState(false, "dlt");
@@ -155,7 +155,6 @@ function App() {
   };
 
   useEffect(() => {
-    console.log("useEffect")
     if (asaClass == "6") {
       setIsEmergency("No");
     }
@@ -228,9 +227,9 @@ function App() {
   };
 
   const sendMessage = (doSubmit) => {
+
     chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
       var currentTab = tabs[0];
-
       if (activeTab == "Anesthesia") {
 
         chrome.tabs.sendMessage(currentTab.id, {
@@ -304,7 +303,7 @@ function App() {
     });
   };
 
-  const active = currentUrl.includes("apps.acgme.org/");
+  const active = currentUrl.includes("apps.acgme.org/") || currentUrl.includes("https://tourmaline-bonbon-1ece8a.netlify.app/");
 
   
   const anesTab = (
@@ -881,16 +880,14 @@ function App() {
 
   return (
     <div id="background" className="p-2 h-full bg-slate-800">
-      <h1 className="inline text-sm text-white font-bold px-2">
-        &#128137;ACGME Anesthesia Case Log Helper
-      </h1>
-      <h2 className="text-blue-500 font-semibold text-xs px-2">Created by jamescho7 | Updated 4/19/25</h2>
-
-
+      <div className="flex justify-between items-center text-xs text-white font-bold px-2">
+  <span>&#128137; ACGME Anesthesia Case Log Helper</span>
+  <span>Updated 4/19/25 by jamescho7</span>
+</div>
 
       {active && (
         <>
-            <div className="flex flex-row justify-start items-end gap-4 px-2 pt-2">
+            <div className="flex flex-row justify-start items-end gap-4 px-2">
           <div className="flex flex-col items-start">
             <label
               htmlFor="date-picker"

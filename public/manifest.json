@@ -17,6 +17,10 @@
     {
       "matches": ["https://apps.acgme.org/*"],
       "js": ["static/content.js"]
+    },
+    {
+      "matches": ["https://tourmaline-bonbon-1ece8a.netlify.app/*"],
+      "js": ["static/content.js"]
     }
   ]
 

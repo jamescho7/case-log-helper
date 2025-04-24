@@ -1,6 +1,5 @@
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
-
   const dateInput = document.querySelector('.input-group.date.ProcedureDate input[type="text"]');
   if (dateInput) {
       dateInput.value = request.date;

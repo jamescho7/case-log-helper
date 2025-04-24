@@ -8,7 +8,7 @@ const Tab = ({ tabs, activeTab, setActiveTab }) => {
         {tabs.map((tab) => (
           <button
             key={tab.label}
-            className={`py-2 px-4 text-center focus:outline-none uppercase font-bold ${
+            className={`py-2 px-4 text-center focus:outline-none uppercase text-xs font-bold ${
               activeTab === tab.label
                 ? 'underline text-blue-500 bg-slate-900 border-blue-400 border-t-2'
                 : 'text-gray-500 bg-slate-800 border-slate-600 border-t-2'

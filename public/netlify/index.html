@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>ACGME Case Entry Demo</title>
+  <style>
+    body { font-family: sans-serif; margin: 2rem; }
+    fieldset { margin-bottom: 1rem; }
+    label { display: block; margin: 0.2rem 0; }
+    .inline-label { display: inline-block; margin-right: 1rem; }
+    #success-message { 
+      padding: 1rem; 
+      margin-top: 1rem; 
+      border: 2px solid green; 
+      background: #e6ffe6; 
+      display: none; 
+    }
+  </style>
+</head>
+<body>
+  <h1>ACGME Case Entry Demo</h1>
+
+  <form id="caseEntryForm">
+    <!-- DATE -->
+    <div class="input-group date ProcedureDate">
+      <label for="procedure-date-text">Case Date</label>
+      <input type="text" id="procedure-date-text" name="date" />
+    </div>
+
+    <!-- AGE -->
+    <label for="PatientTypes">Patient Age</label>
+    <select id="PatientTypes" name="ageCategory">
+      <option value="30">&lt;3 mos.</option>
+      <option value="31">3 mos to 2 years</option>
+      <option value="32">3 to 11 years</option>
+      <option value="33">12 to 64 years</option>
+      <option value="34">65+</option>
+    </select>
+
+    <!-- ASA CLASS -->
+    <fieldset>
+      <legend>ASA Class</legend>
+      <!-- 1–5 normal -->
+      <label><input type="radio" id="156628" name="asaClass" value="1" /> 1</label>
+      <label><input type="radio" id="156632" name="asaClass" value="2" /> 2</label>
+      <label><input type="radio" id="156634" name="asaClass" value="3" /> 3</label>
+      <label><input type="radio" id="156636" name="asaClass" value="4" /> 4</label>
+      <label><input type="radio" id="156630" name="asaClass" value="5" /> 5</label>
+      <label><input type="radio" id="156631" name="asaClass" value="6" /> 6</label>
+      <!-- 1–5 with E suffix -->
+      <label><input type="radio" id="156629" name="asaClass" value="1E" /> 1E</label>
+      <label><input type="radio" id="156633" name="asaClass" value="2E" /> 2E</label>
+      <label><input type="radio" id="156635" name="asaClass" value="3E" /> 3E</label>
+      <label><input type="radio" id="156637" name="asaClass" value="4E" /> 4E</label>
+      <label><input type="radio" id="156626" name="asaClass" value="5E" /> 5E</label>
+    </fieldset>
+
+    <!-- EMERGENCY & DIFFICULT AIRWAY -->
+    <label><input type="checkbox" id="CaseTypes_46" name="isEmergency" value="Non-Trauma" /> Non-Trauma Emergency</label>
+    <label><input type="checkbox" id="CaseTypes_134" name="isEmergency" value="Trauma" /> Trauma Emergency</label>
+    <label><input type="checkbox" id="CaseTypes_148" name="isDifficultAirway" value="Anticipated" /> Anticipated Difficult Airway</label>
+    <label><input type="checkbox" id="CaseTypes_149" name="isDifficultAirway" value="Unanticipated" /> Unanticipated Difficult Airway</label>
+
+    <!-- ANESTHESIA TYPE -->
+    <fieldset>
+      <legend>Primary Anesthesia</legend>
+      <label><input type="radio" id="1256330" name="anesType" value="GA" /> GA</label>
+      <label><input type="radio" id="156641" name="anesType" value="MAC" /> MAC</label>
+      <label><input type="radio" id="1256331" name="anesType" value="Spinal" /> Spinal</label>
+      <label><input type="radio" id="1256332" name="anesType" value="Epidural" /> Epidural</label>
+      <label><input type="radio" id="156646" name="anesType" value="CSE" /> CSE</label>
+    </fieldset>
+
+    <!-- AIRWAY DEVICE & TECHNIQUES -->
+    <fieldset>
+      <legend>Airway Device</legend>
+      <label><input type="radio" id="156654" name="airwayDevice" value="Oral ETT" /> Oral ETT</label>
+      <label><input type="radio" id="156655" name="airwayDevice" value="Nasal ETT" /> Nasal ETT</label>
+      <label><input type="radio" id="1256333" name="airwayDevice" value="LMA" /> LMA</label>
+      <label><input type="radio" id="156650" name="airwayDevice" value="Mask Only" /> Mask Only</label>
+    </fieldset>
+
+    <fieldset>
+      <legend>Airway Technique</legend>
+      <label class="inline-label">
+        <input type="checkbox" id="1256334" name="directLaryngoscopy" />
+        Direct Laryngoscopy
+      </label>
+      <label class="inline-label">
+        <input type="checkbox" id="1256335" name="indirectLaryngoscopy" />
+        Indirect Laryngoscopy
+      </label>
+      <label class="inline-label">
+        <input type="checkbox" id="2298046" name="flexibleBronchoscopy" />
+        Flexible Bronchoscopy
+      </label>
+    </fieldset>
+
+    <fieldset>
+      <legend>Airway Modifiers</legend>
+      <label><input type="checkbox" id="1256336" name="dlt" /> DLT</label>
+      <label><input type="checkbox" id="156674" name="bronchialBlocker" /> Bronchial Blocker</label>
+      <label><input type="checkbox" id="156666" name="jetVentilation" /> Jet Ventilation</label>
+      <label><input type="checkbox" id="2298047" name="awakeIntubation" /> Awake Intubation</label>
+    </fieldset>
+
+    <!-- PROCEDURE CATEGORY -->
+    <fieldset>
+      <legend>Procedure Category</legend>
+      <label><input type="radio" id="156682" name="category" value="Cardiac" /> Cardiac</label>
+      <label><input type="radio" id="156683" name="category" value="Intrathoracic" /> Intrathoracic</label>
+      <label><input type="radio" id="156684" name="category" value="Major Vascular" /> Major Vascular</label>
+      <label><input type="radio" id="156687" name="category" value="Intracerebral" /> Intracerebral</label>
+      <label><input type="radio" id="156690" name="category" value="Delivery" /> Delivery</label>
+    </fieldset>
+
+    <fieldset>
+      <legend>Subcategory</legend>
+      <label><input type="radio" id="156681" name="subcategory" value="With CPB" /> Cardiac w/ CPB</label>
+      <label><input type="radio" id="156682" name="subcategory" value="Without CPB" /> Cardiac w/o CPB</label>
+      <label><input type="radio" id="156685" name="subcategory" value="Endovascular" /> Major Vascular – Endovascular</label>
+      <label><input type="radio" id="156684" name="subcategory" value="Open Vascular" /> Major Vascular – Open</label>
+      <label><input type="radio" id="156688" name="subcategory" value="Endovascular" /> Intracerebral – Endovascular</label>
+      <label><input type="radio" id="156689" name="subcategory" value="Open Nonvascular" /> Intracerebral – Open Nonvascular</label>
+      <label><input type="radio" id="156687" name="subcategory" value="Open Vascular" /> Intracerebral – Open Vascular</label>
+      <label><input type="radio" id="156692" name="subcategory" value="C-Section" /> C-Section</label>
+      <label><input type="radio" id="156686" name="subcategory" value="High-Risk C-Section" /> High-Risk C-Section</label>
+      <label><input type="radio" id="156690" name="subcategory" value="Vaginal Delivery" /> Vaginal Delivery</label>
+      <label><input type="radio" id="156691" name="subcategory" value="High-Risk Vaginal Delivery" /> High-Risk Vaginal Delivery</label>
+    </fieldset>
+
+    <!-- ACCESS -->
+    <label><input type="checkbox" id="156693" name="ultrasound" /> Ultrasound-guided access</label>
+    <label><input type="checkbox" id="1256338" name="aline" /> Arterial line</label>
+    <label><input type="checkbox" id="1256339" name="cline" /> Central line</label>
+    <label><input type="checkbox" id="156700" name="pacath" /> Pulmonary artery catheter</label>
+
+    <!-- SPECIAL MONITORS -->
+    <label><input type="checkbox" id="1256341" name="csf" /> CSF Drain</label>
+    <label><input type="checkbox" id="156708" name="epm" /> Electrophysiologic monitor</label>
+    <label><input type="checkbox" id="156707" name="tee" /> TEE</label>
+
+    <!-- NERVE BLOCKS -->
+    <fieldset>
+      <legend>Block Type</legend>
+      <label><input type="checkbox" id="156647" name="continuous" /> Continuous</label>
+      <label><input type="checkbox" id="156648" name="single" /> Single shot</label>
+    </fieldset>
+
+    <fieldset>
+      <legend>Upper Extremity</legend>
+      <label><input type="checkbox" id="156734" name="axillary" /> Axillary</label>
+      <label><input type="checkbox" id="156732" name="infraclavicular" /> Infraclavicular</label>
+      <label><input type="checkbox" id="156731" name="interscalene" /> Interscalene</label>
+      <label><input type="checkbox" id="156733" name="supraclavicular" /> Supraclavicular</label>
+    </fieldset>
+
+    <fieldset>
+      <legend>Lower Extremity</legend>
+      <label><input type="checkbox" id="1911477" name="adductorCanal" /> Adductor Canal</label>
+      <label><input type="checkbox" id="156730" name="ankle" /> Ankle</label>
+      <label><input type="checkbox" id="156735" name="femoral" /> Femoral</label>
+      <label><input type="checkbox" id="156729" name="popliteal" /> Popliteal</label>
+      <label><input type="checkbox" id="156740" name="saphenous" /> Saphenous</label>
+      <label><input type="checkbox" id="156736" name="sciatic" /> Sciatic</label>
+    </fieldset>
+
+    <fieldset>
+      <legend>Trunkal & Other</legend>
+      <label><input type="checkbox" id="1911478" name="erectorSpinaePlane" /> ESP</label>
+      <label><input type="checkbox" id="156737" name="lumbarPlexus" /> Lumbar Plexus</label>
+      <label><input type="checkbox" id="156739" name="paravertebral" /> Paravertebral</label>
+      <label><input type="checkbox" id="1911476" name="quadratusLumborum" /> QL</label>
+      <label><input type="checkbox" id="1911475" name="transversusAbdominalPlane" /> TAP</label>
+      <label><input type="checkbox" id="156738" name="retrobulbar" /> Retrobulbar</label>
+      <label><input type="checkbox" id="1256340" name="other" /> Other</label>
+    </fieldset>
+
+    <!-- FORM BUTTONS -->
+    <div>
+      <button type="button" id="fill-button">Fill</button>
+      <button type="submit" id="submitButton">Submit</button>
+      <button type="reset" id="reset-button">Reset</button>
+    </div>
+  </form>
+
+  <div id="success-message">
+    ✅ Form submitted successfully!
+    <button id="reset-button-2">Reset Form</button>
+  </div>
+
+  <script>
+    // show success box on submit
+    const form = document.getElementById('caseEntryForm');
+    const success = document.getElementById('success-message');
+    form.addEventListener('submit', evt => {
+      evt.preventDefault();
+      form.style.display = 'none';
+      success.style.display = 'block';
+    });
+    document.getElementById('reset-button-2').addEventListener('click', () => {
+      success.style.display = 'none';
+      form.reset();
+      form.style.display = 'block';
+    });
+  </script>
+</body>
+</html>
